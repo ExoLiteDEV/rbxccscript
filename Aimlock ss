@@ -1,0 +1,38 @@
+local plr = game:GetService("Players").LocalPlayer
+local run = game:GetService("RunService")
+local uis = game:GetService("UserInputService")
+local cam = workspace.CurrentCamera
+local locked = false
+
+
+function getPointedPlayer()
+local mousePos = uis:GetMouseLocation()
+local results = {math.huge}
+
+for _, player in pairs(game:GetService("Players"):GetChildren()) do
+if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+local pos = cam:WorldToScreenPoint(player.Character.HumanoidRootPart.Position)
+local dist = (Vector2.new(pos.X, pos.Y) - mousePos).Magnitude
+if dist < results[1] and player ~= plr then
+results[1] = dist
+results[2] = player.Character
+end
+end
+end
+
+return results[2]
+end
+
+
+uis.InputBegan:Connect(function(key)
+if key.KeyCode == Enum.KeyCode.P then
+locked = not locked
+local target = getPointedPlayer()
+
+while target and target:FindFirstChild("Humanoid") and target:FindFirstChild("HumanoidRootPart") and locked and run.Heartbeat:Wait() do
+cam.CFrame = CFrame.new(cam.CFrame.Position, target.HumanoidRootPart.Position)
+end
+
+locked = false
+end
+end)
