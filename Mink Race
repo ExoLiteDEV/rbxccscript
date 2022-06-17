@@ -1,0 +1,16 @@
+function B()
+	print("B")
+end
+
+function BBB()
+    game.Players.LocalPlayer.Data.Race.Value = "Mink"
+end
+
+while B do wait()
+	pcall(function ()
+		BBB()
+	end)
+end
+
+
+print("Mink Success!")
